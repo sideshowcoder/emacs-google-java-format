@@ -91,5 +91,5 @@ Use this via `(add-hook 'java-mode-hook 'gjf-indention-settings)'"
   (c-set-offset 'case-label '+)
   (c-set-offset 'statement-cont '++))
 
-(provide 'google-java-format)
+(provide 'emacs-google-java-format)
 ;;; google-java-format.el ends here
