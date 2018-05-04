@@ -1,11 +1,12 @@
-;;; google-java-format.el --- Format java file according to google style
+;;; emacs-google-java-format.el --- Format java file according to google style
 
 ;; Copyright (C) 2018 Philipp Fehre
 
-; Author: Philipp Fehre <philipp@fehre.co.uk>
+;; Author: Philipp Fehre <philipp@fehre.co.uk>
+;; Homepage: https://github.com/sideshowcoder/emacs-google-java-format
 
 ;; Version: 1.0.0
-;; Keywords: java, google, format
+;; Keywords: tools
 
 ;; Copyright 2018 Philipp Fehre
 ;;
@@ -37,7 +38,7 @@
 ;; See https://github.com/google/google-java-format/releases
 ;;
 ;; This works best with the formatting rules set up via
-;; `(add-hook 'java-mode-hook 'gjf-indention-settings)'
+;; `(add-hook 'java-mode-hook 'emacs-google-java-format-indention-settings)'
 ;;
 
 ;;; Code:
@@ -45,51 +46,52 @@
 (require 'url)
 (require 'cc-vars)
 
-(defvar gjf-jar-name
+(defvar emacs-google-java-format-jar-name
   "google-java-format-1.5-all-deps.jar"
   "Jar name for google-java-format.")
 
-(defvar gjf-release-url
+(defvar emacs-google-java-format-release-url
   "https://github.com/google/google-java-format/releases/download/google-java-format-1.5/"
   "URL to jar to use for google-java-format jar download.")
 
-(defvar gjf-fail-token
-  "GJF4711FAIL"
+(defvar emacs-google-java-format-fail-token
+  "EMACS-GOOGLE-JAVA-FORMAT4711FAIL"
   "Token used to detect if the formatter failed for format the content.")
 
-(defvar gjf-jar-path
+(defvar emacs-google-java-format-jar-path
   (concat user-emacs-directory "google-java-format/")
   "Full path to google-format-jar.")
 
-(defun gjf-setup-formatter ()
-  "Download google-java-format from `gjf-release-url' use into `gjf-jar-path'."
+(defun emacs-google-java-format-setup-formatter ()
+  "Download google-java-format from `emacs-google-java-format-release-url' use into `emacs-google-java-format-jar-path'."
   (interactive)
-  (make-directory gjf-jar-path 't)
-  (let ((download-url (concat gjf-release-url gjf-jar-name))
-        (store-path (concat gjf-jar-path gjf-jar-name)))
+  (make-directory emacs-google-java-format-jar-path 't)
+  (let ((download-url (concat emacs-google-java-format-release-url emacs-google-java-format-jar-name))
+        (store-path (concat emacs-google-java-format-jar-path emacs-google-java-format-jar-name)))
     (url-copy-file download-url store-path)))
 
-(defun gjf--formatter-failed-p (result)
-  "Detect google-java-format failure in RESULT based on `gjf-fail-token'."
-  (string-match-p (regexp-quote gjf-fail-token) result))
+(defun emacs-google-java-format--formatter-failed-p (result)
+  "Detect google-java-format failure in RESULT based on `emacs-google-java-format-fail-token'."
+  (string-match-p (regexp-quote emacs-google-java-format-fail-token) result))
 
-(defun gjf-reformat-buffer ()
+(defun emacs-google-java-format-reformat-buffer ()
   "Run the google formatter on the current file."
   (interactive)
   (let ((content (shell-command-to-string
-                  (concat "java -jar " gjf-jar-path gjf-jar-name " " buffer-file-name " || echo " gjf-fail-token))))
-    (if (gjf--formatter-failed-p content)
-        (message "Format failed: %s" (car (split-string content gjf-fail-token)))
+                  (concat "java -jar " emacs-google-java-format-jar-path emacs-google-java-format-jar-name " " buffer-file-name " || echo " emacs-google-java-format-fail-token))))
+    (if (emacs-google-java-format--formatter-failed-p content)
+        (message "Format failed: %s" (car (split-string content emacs-google-java-format-fail-token)))
       (save-excursion
         (setf (buffer-string) content)))))
 
-(defun gjf-indention-settings ()
+(defun emacs-google-java-format-indention-settings ()
   "Setup java indention rules according to google-java-format standard.
 
-Use this via `(add-hook 'java-mode-hook 'gjf-indention-settings)'"
+Use this via `(add-hook 'java-mode-hook 'emacs-google-java-format-indention-settings)'"
   (setq c-basic-offset 2)
   (c-set-offset 'case-label '+)
   (c-set-offset 'statement-cont '++))
 
 (provide 'emacs-google-java-format)
-;;; google-java-format.el ends here
+
+;;; emacs-google-java-format.el ends here
