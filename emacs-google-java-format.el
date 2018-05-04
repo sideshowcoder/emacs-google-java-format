@@ -59,7 +59,7 @@
   "Token used to detect if the formatter failed for format the content.")
 
 (defvar emacs-google-java-format-jar-path
-  (concat user-emacs-directory "google-java-format/")
+  (concat (file-name-as-directory user-emacs-directory) "google-java-format/")
   "Full path to google-format-jar.")
 
 (defun emacs-google-java-format-setup-formatter ()
